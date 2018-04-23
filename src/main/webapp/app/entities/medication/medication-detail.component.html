@@ -1,0 +1,37 @@
+
+<div *ngIf="medication">
+    <h2><span>Medication</span> {{medication.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Name</span></dt>
+        <dd>
+            <span>{{medication.name}}</span>
+        </dd>
+        <dt><span>Description</span></dt>
+        <dd>
+            <span>{{medication.description}}</span>
+        </dd>
+        <dt><span>Producer</span></dt>
+        <dd>
+            <span>{{medication.producer}}</span>
+        </dd>
+        <dt><span>Precautions</span></dt>
+        <dd>
+            <span>{{medication.precautions}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'medication/'+ medication.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

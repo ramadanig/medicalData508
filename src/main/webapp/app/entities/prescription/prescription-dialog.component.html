@@ -1,0 +1,110 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myPrescriptionLabel">Create or edit a Prescription</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!prescription.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="prescription.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_dosage">Dosage</label>
+            <input type="text" class="form-control" name="dosage" id="field_dosage"
+                [(ngModel)]="prescription.dosage" required />
+            <div [hidden]="!(editForm.controls.dosage?.dirty && editForm.controls.dosage?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.dosage?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_expiration">Expiration</label>
+            <div class="input-group">
+                <input id="field_expiration" type="text" class="form-control" name="expiration" ngbDatepicker  #expirationDp="ngbDatepicker" [(ngModel)]="prescription.expiration"
+                required/>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-secondary" (click)="expirationDp.toggle()"><i class="fa fa-calendar"></i></button>
+                </span>
+            </div>
+            <div [hidden]="!(editForm.controls.expiration?.dirty && editForm.controls.expiration?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.expiration?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_refills">Refills</label>
+            <input type="number" class="form-control" name="refills" id="field_refills"
+                [(ngModel)]="prescription.refills" required min="0" />
+            <div [hidden]="!(editForm.controls.refills?.dirty && editForm.controls.refills?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.refills?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.refills?.errors?.min">
+                    This field should be at least 0.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.refills?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_medication">Medication</label>
+            <select class="form-control" id="field_medication" name="medication" [(ngModel)]="prescription.medication"  required>
+                <option *ngIf="!editForm.value.medication" [ngValue]="null" selected></option>
+                <option [ngValue]="medicationOption.id === prescription.medication?.id ? prescription.medication : medicationOption" *ngFor="let medicationOption of medications; trackBy: trackMedicationById">{{medicationOption.id}}</option>
+            </select>
+        </div>
+        <div [hidden]="!(editForm.controls.medication?.dirty && editForm.controls.medication?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.medication?.errors?.required">
+                This field is required.
+            </small>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_patient">Patient</label>
+            <select class="form-control" id="field_patient" name="patient" [(ngModel)]="prescription.patient"  required>
+                <option *ngIf="!editForm.value.patient" [ngValue]="null" selected></option>
+                <option [ngValue]="patientOption.id === prescription.patient?.id ? prescription.patient : patientOption" *ngFor="let patientOption of patients; trackBy: trackPatientById">{{patientOption.id}}</option>
+            </select>
+        </div>
+        <div [hidden]="!(editForm.controls.patient?.dirty && editForm.controls.patient?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.patient?.errors?.required">
+                This field is required.
+            </small>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_doctor">Doctor</label>
+            <select class="form-control" id="field_doctor" name="doctor" [(ngModel)]="prescription.doctor"  required>
+                <option *ngIf="!editForm.value.doctor" [ngValue]="null" selected></option>
+                <option [ngValue]="doctorOption.id === prescription.doctor?.id ? prescription.doctor : doctorOption" *ngFor="let doctorOption of doctors; trackBy: trackDoctorById">{{doctorOption.id}}</option>
+            </select>
+        </div>
+        <div [hidden]="!(editForm.controls.doctor?.dirty && editForm.controls.doctor?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.doctor?.errors?.required">
+                This field is required.
+            </small>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

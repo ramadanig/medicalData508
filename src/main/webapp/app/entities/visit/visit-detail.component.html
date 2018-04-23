@@ -1,0 +1,45 @@
+
+<div *ngIf="visit">
+    <h2><span>Visit</span> {{visit.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Date</span></dt>
+        <dd>
+            <span>{{visit.date | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span>Notes</span></dt>
+        <dd>
+            <span>{{visit.notes}}</span>
+        </dd>
+        <dt><span>Treatments</span></dt>
+        <dd>
+            <span>{{visit.treatments}}</span>
+        </dd>
+        <dt><span>Patient</span></dt>
+        <dd>
+            <div *ngIf="visit.patient">
+                <a [routerLink]="['/patient', visit.patient?.id]">{{visit.patient?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Doctor</span></dt>
+        <dd>
+            <div *ngIf="visit.doctor">
+                <a [routerLink]="['/doctor', visit.doctor?.id]">{{visit.doctor?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'visit/'+ visit.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

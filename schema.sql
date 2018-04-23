@@ -28,4 +28,86 @@ INSERT INTO patients VALUES (0,'786-45-1932','Stuart','Geipel','male','1995-09-1
 
 INSERT INTO prescriptions VALUES (0,'Take as needed during asthma attacks','2018-10-19',1,2,3,1);
 
--- TODO: TESTS, VISITS, INSURANCES, MORE PRESCRIPTIONS
+
+-- ##### 20 QUERIES BEGIN HERE ##### --
+
+
+-- Query 1 - List all visits by one patient in the last year
+SELECT a.* FROM visit a WHERE a.patient_id = 1001 AND a.jhi_date >= DATE '2018-01-01';
+
+-- Query 2 - List all tests run on one patient during a certain visit
+SELECT a.* FROM tests a WHERE a.patient_id = 1001 AND a.visit_id = 1051;
+
+-- Query 3 - List all doctors with a certain specialty
+SELECT * FROM doctor WHERE specialty = 'Oncology';
+
+-- Query 4 - List all doctors who have seen a certain patient
+SELECT a.* FROM doctor a, visit b WHERE b.patient_id = 1001 AND b.doctor_id = a.id;
+
+-- Query 5 - When does a patient's insurance run out
+-- NOTE: NOT POSSIBLE - Insurance doesn't contain an expiration date in the current schema.
+-- An expiration date could be added, though.
+
+-- Query 6 - List all sicknesses that a patient has had
+-- NOTE: NOT POSSIBLE - The many-to-many relationship between ailments and tests that would
+-- derive ailments doesn't cooperate with jHipster, so it had to be ignored.
+
+-- Query 7 - List the doctor's notes from the last visit for a certain patient
+SELECT a.notes FROM visit a WHERE a.patient_id = 1001 ORDER BY a.jhi_date DESC LIMIT 1;
+
+-- Query 8 - When was the last time that this patient saw a doctor
+SELECT a.jhi_date FROM visit a WHERE a.patient_id = 1001 ORDER BY a.jhi_date DESC LIMIT 1;
+
+-- Query 9 - What prescriptions has a certain doctor prescribed
+SELECT b.name FROM prescription a, medication b WHERE a.doctor_id = 1021 AND b.id = a.medication_id;
+
+-- Query 10 - When should a patient refill their prescription
+-- NOTE: NOT POSSIBLE - refills are fulfilled on an as-needed basis, varying between drugs.
+-- This means that when one patient needs to refill their prescription varies from what may be
+-- entered in a database based on the patient missing dosages, or the drug being used sporadically
+-- (like an inhaler).
+
+-- Query 11 w/ modification. You cannot look-up how many total refills they have done, but
+-- you can look up how many refills they have left.
+select p.last_name || ', ' || p.first_name as patient_name, pr.refills as refill_remaining
+from patient p, prescription pr
+group by pr.patient_id, p.id;
+
+-- Query 12 - What medication is a person using at this moment.
+select p.last_name || ', ' || p.first_name as patient_name, pr.expiration as expiration_date
+from patient p, prescription pr
+where pr.patient_id = p.id;
+
+-- Query 13 - What medication has a patient used before.
+select p.last_name || ', ' || p.first_name as patient_name, m.name as medication_name
+from patient p, medication m, prescription pr
+where pr.medication_id = m.id and pr.patient_id = p.id;
+
+-- Query 14 - How many patients has the doctor seen in the last year.
+select d.last_name || ', ' || d.first_name as doctor_name, count(v.id) as visit_count
+from doctor d, visit v
+where d.id = v.doctor_id
+group by d.id, v.id;
+
+-- Query 15 - How many visits has a person had.
+select p.last_name || ', ' || p.first_name as patient_name, count(v.id) as visit_count
+from patient p, visit v
+where p.id = v.patient_id
+group by p.id, v.id;
+
+-- Query 16 - List all patients a doctor has seen
+SELECT a.* FROM patient a, visit b WHERE a.id = b.patient_id AND b.doctor_id = 1021;
+
+-- Query 17 - List all appointments a doctor should have for a day
+SELECT * FROM visit a WHERE a.doctor_id = 1021 AND a.jhi_date = '2018-04-23';
+
+-- Query 18 - What sickness did this person have on their last visit
+SELECT a.notes FROM visit a WHERE a.patient_id = 1001 ORDER BY a.jhi_date DESC LIMIT 1;
+
+-- Query 19 - What symptoms was this person showing on their last visit
+SELECT a.notes FROM visit a WHERE a.patient_id = 1001 ORDER BY a.jhi_date DESC LIMIT 1;
+
+-- Query 20 - What drug this person was prescribed on their last visit
+-- NOTE: NOT POSSIBLE - 'prescriptions' are not related to 'visits' in any meaningful way.
+-- This could be fixed by adding a new relationship, but in the original ERD, this wasn't present,
+-- making this query impossible.

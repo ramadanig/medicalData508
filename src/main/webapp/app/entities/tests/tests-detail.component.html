@@ -1,0 +1,51 @@
+
+<div *ngIf="tests">
+    <h2><span>Tests</span> {{tests.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Name</span></dt>
+        <dd>
+            <span>{{tests.name}}</span>
+        </dd>
+        <dt><span>Data</span></dt>
+        <dd>
+            <span>{{tests.data}}</span>
+        </dd>
+        <dt><span>Results</span></dt>
+        <dd>
+            <span>{{tests.results}}</span>
+        </dd>
+        <dt><span>Patient</span></dt>
+        <dd>
+            <div *ngIf="tests.patient">
+                <a [routerLink]="['/patient', tests.patient?.id]">{{tests.patient?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Doctor</span></dt>
+        <dd>
+            <div *ngIf="tests.doctor">
+                <a [routerLink]="['/doctor', tests.doctor?.id]">{{tests.doctor?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Visit</span></dt>
+        <dd>
+            <div *ngIf="tests.visit">
+                <a [routerLink]="['/visit', tests.visit?.id]">{{tests.visit?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'tests/'+ tests.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>
